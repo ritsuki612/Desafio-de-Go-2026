@@ -24,7 +24,7 @@ function uploadPhoto(base64Data, filename) {
     const blob = Utilities.newBlob(Utilities.base64Decode(base64), contentType, filename);
     const file = getNewsFolder().createFile(blob);
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    return `https://drive.google.com/uc?export=view&id=${file.getId()}`;
+    return `https://drive.google.com/thumbnail?id=${file.getId()}&sz=w800`;
   } catch (err) {
     console.error('Photo upload error:', err.message);
     return '';

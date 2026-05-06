@@ -173,21 +173,21 @@ export default function NewsPage() {
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white">{nt.title}</h1>
           <p className="text-slate-400 text-lg">{nt.subtitle}</p>
+          <div className="pt-2">
+            <Link
+              href="/news/new"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all hover:scale-105 text-sm"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              {nt.newPost}
+            </Link>
+          </div>
         </div>
       </section>
 
-      <div className="max-w-3xl mx-auto px-4 pb-20 -mt-4">
-        <div className="flex justify-end mb-8">
-          <Link
-            href="/news/new"
-            className="flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all hover:scale-105 text-sm"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            {nt.newPost}
-          </Link>
-        </div>
+      <div className="max-w-3xl mx-auto px-4 pb-20 pt-10">
 
         {loading ? (
           <div className="flex justify-center py-20">

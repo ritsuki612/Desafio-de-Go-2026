@@ -6,8 +6,8 @@ import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const MAX_PHOTOS = 3;
-const MAX_WIDTH = 1200;
-const JPEG_QUALITY = 0.78;
+const MAX_WIDTH = 800;
+const JPEG_QUALITY = 0.60;
 
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
