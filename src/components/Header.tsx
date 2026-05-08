@@ -16,7 +16,6 @@ export default function Header() {
     { href: '/learn', label: t.nav.learn },
     { href: '/about', label: t.nav.about },
     { href: '/register', label: t.nav.register },
-    { href: '/profile', label: t.nav.profile },
   ];
 
   const isActive = (href: string) => {
@@ -32,7 +31,6 @@ export default function Header() {
           <span className="text-2xl">⬤</span>
           <span className="text-lg">
             <span className="text-green-400">{t.nav.logoName}</span>
-            <span className="text-amber-400"> Challenge</span>
           </span>
         </Link>
 

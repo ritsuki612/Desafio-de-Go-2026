@@ -3,6 +3,34 @@
 // スプレッドシートの「拡張機能 → Apps Script」に貼り付けて使用
 // ==========================================
 
+// 【既存投稿のURL一括修正】
+// 古い uc?export=view 形式を thumbnail 形式に変換する
+// Apps Scriptエディタで migratePhotoUrls を選択して一度だけ▶実行してください
+function migratePhotoUrls() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ensureNewsSheet(ss);
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) { Logger.log('投稿なし'); return; }
+
+  const range = sheet.getRange(2, 4, lastRow - 1, 3); // Photo1〜Photo3列
+  const values = range.getValues();
+
+  let count = 0;
+  for (let i = 0; i < values.length; i++) {
+    for (let j = 0; j < 3; j++) {
+      const url = String(values[i][j]);
+      if (url.includes('uc?export=view&id=')) {
+        const id = url.split('id=')[1];
+        values[i][j] = `https://drive.google.com/thumbnail?id=${id}&sz=w800`;
+        count++;
+      }
+    }
+  }
+
+  range.setValues(values);
+  Logger.log(`修正完了: ${count}件のURLを更新しました`);
+}
+
 const SHEET_NAME = 'Inscrições';
 const NEWS_SHEET_NAME = 'News';
 const DRIVE_FOLDER_NAME = 'IgoChallenge-News';

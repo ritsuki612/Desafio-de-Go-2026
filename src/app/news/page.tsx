@@ -20,7 +20,23 @@ function formatDate(iso: string, lang: string) {
   });
 }
 
+// drive.google.com の URL からファイルIDを抽出してプロキシ経由に変換する
+function toDriveProxyUrl(url: string): string {
+  if (!url) return url;
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'drive.google.com') {
+      const id = u.searchParams.get('id');
+      if (id) return `/api/drive-image?id=${id}`;
+    }
+  } catch {
+    // 解析失敗時はそのまま返す
+  }
+  return url;
+}
+
 function PhotoGrid({ photos }: { photos: string[] }) {
+  photos = photos.map(toDriveProxyUrl);
   if (photos.length === 0) return null;
   if (photos.length === 1) {
     return (
@@ -169,7 +185,7 @@ export default function NewsPage() {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
-            Igo Challenge News
+            Desafio de Go 2026
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white">{nt.title}</h1>
           <p className="text-slate-400 text-lg">{nt.subtitle}</p>
