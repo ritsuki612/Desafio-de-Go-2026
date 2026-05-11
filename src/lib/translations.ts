@@ -7,6 +7,7 @@ export const translations = {
     nav: {
       home: 'Início',
       news: 'Notícias',
+      instructors: 'Instrutores',
       learn: 'Aprender',
       register: 'Participar',
       profile: 'Meu Perfil',
@@ -222,6 +223,10 @@ export const translations = {
       required: 'Este campo é obrigatório.',
       storageNote: 'As publicações são salvas neste navegador.',
     },
+    instructors: {
+      title: 'Instrutores',
+      subtitle: 'Conheça os instrutores do Desafio de Go 2026',
+    },
     footer: {
       tagline: 'Aprendendo Go, conectando culturas.',
       links: 'Links',
@@ -233,6 +238,7 @@ export const translations = {
     nav: {
       home: 'ホーム',
       news: 'ニュース',
+      instructors: 'インストラクター',
       learn: '学ぶ',
       register: '参加申込',
       profile: 'プロフィール',
@@ -447,6 +453,10 @@ export const translations = {
       publishedOn: '投稿日',
       required: 'この項目は必須です。',
       storageNote: '投稿はこのブラウザに保存されます。',
+    },
+    instructors: {
+      title: 'インストラクター',
+      subtitle: 'Desafio de Go 2026 のインストラクターをご紹介します',
     },
     footer: {
       tagline: '囲碁で学び、文化でつながる。',
