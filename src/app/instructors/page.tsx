@@ -19,8 +19,8 @@ O Go é simples — e é exatamente por isso que ele é tão profundo.`,
     name: 'Pedro Vendrametto',
     photo: '/instructors/pedro.jpg',
     bio: `Olá pessoal.
-Meu nome é Pedro Vendrametto e serei um instrutor para ajudar a prepara-los para o torneio.
-Trabalho na Associação Brasil Nihon-Kiin. Nosso objetivo é expandir o jogo de Go no Brasil, e torna-lo mais acessível para todos que se aventuram neste universo infinito de possibilidades. Vou garantir o que o aprendizado seja divertido e duradouro.`,
+Meu nome é Pedro Vendrametto e serei um instrutor para ajudar a prepará-los para o torneio.
+Trabalho na Associação Brasil Nihon-Kiin. Nosso objetivo é expandir o jogo de Go no Brasil, e torná-lo mais acessível para todos que se aventuram neste universo infinito de possibilidades. Vou garantir que o aprendizado seja divertido e duradouro.`,
   },
   {
     id: 'camila',
