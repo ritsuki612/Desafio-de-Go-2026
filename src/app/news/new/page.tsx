@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import PasswordGate, { getStoredPassword } from '@/components/PasswordGate';
 
 const MAX_PHOTOS = 3;
 const MAX_WIDTH = 800;
@@ -81,6 +82,7 @@ export default function NewPostPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'news',
+          password: getStoredPassword(),
           title: title.trim(),
           content: content.trim(),
           photos,
@@ -97,6 +99,7 @@ export default function NewPostPage() {
   }
 
   return (
+    <PasswordGate>
     <div className="page-enter">
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-green-950" />
@@ -243,5 +246,6 @@ export default function NewPostPage() {
         </form>
       </div>
     </div>
+    </PasswordGate>
   );
 }

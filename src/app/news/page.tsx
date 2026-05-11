@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAdminAuth, getStoredPassword } from '@/components/PasswordGate';
 
 interface NewsPost {
   id: string;
@@ -20,7 +21,6 @@ function formatDate(iso: string, lang: string) {
   });
 }
 
-// drive.google.com の URL からファイルIDを抽出してプロキシ経由に変換する
 function toDriveProxyUrl(url: string): string {
   if (!url) return url;
   try {
@@ -79,11 +79,13 @@ function PhotoGrid({ photos }: { photos: string[] }) {
 function NewsCard({
   post,
   lang,
+  isAdmin,
   onDelete,
   deleting,
 }: {
   post: NewsPost;
   lang: string;
+  isAdmin: boolean;
   onDelete: (id: string) => void;
   deleting: boolean;
 }) {
@@ -106,27 +108,29 @@ function NewsCard({
             </svg>
             {nt.publishedOn} {formatDate(post.publishedAt, lang)}
           </p>
-          <div className="flex gap-2 items-center">
-            {confirmDelete && (
+          {isAdmin && (
+            <div className="flex gap-2 items-center">
+              {confirmDelete && (
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="text-xs text-slate-400 hover:text-white px-3 py-1 rounded-lg bg-slate-700 transition-colors"
+                >
+                  {nt.cancel}
+                </button>
+              )}
               <button
-                onClick={() => setConfirmDelete(false)}
-                className="text-xs text-slate-400 hover:text-white px-3 py-1 rounded-lg bg-slate-700 transition-colors"
+                onClick={() => confirmDelete ? onDelete(post.id) : setConfirmDelete(true)}
+                disabled={deleting}
+                className={`text-xs px-3 py-1 rounded-lg transition-colors disabled:opacity-50 ${
+                  confirmDelete
+                    ? 'bg-red-600 hover:bg-red-500 text-white'
+                    : 'text-slate-500 hover:text-red-400 bg-slate-800 hover:bg-slate-700'
+                }`}
               >
-                {nt.cancel}
+                {deleting ? '...' : confirmDelete ? nt.deleteConfirm : nt.deletePost}
               </button>
-            )}
-            <button
-              onClick={() => confirmDelete ? onDelete(post.id) : setConfirmDelete(true)}
-              disabled={deleting}
-              className={`text-xs px-3 py-1 rounded-lg transition-colors disabled:opacity-50 ${
-                confirmDelete
-                  ? 'bg-red-600 hover:bg-red-500 text-white'
-                  : 'text-slate-500 hover:text-red-400 bg-slate-800 hover:bg-slate-700'
-              }`}
-            >
-              {deleting ? '...' : confirmDelete ? nt.deleteConfirm : nt.deletePost}
-            </button>
-          </div>
+            </div>
+          )}
         </div>
         <h2 className="text-xl font-bold text-white leading-snug">{post.title}</h2>
         <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">{post.content}</p>
@@ -135,13 +139,99 @@ function NewsCard({
   );
 }
 
+// パスワード認証モーダル
+function AuthModal({
+  onSuccess,
+  onClose,
+}: {
+  onSuccess: () => void;
+  onClose: () => void;
+}) {
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'verify', password }),
+      });
+      if (res.ok) {
+        sessionStorage.setItem('admin_password', password);
+        onSuccess();
+      } else {
+        setError('Senha incorreta / パスワードが違います');
+      }
+    } catch {
+      setError('Erro de conexão');
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+      <form onSubmit={handleSubmit} className="glass-card rounded-3xl p-8 w-full max-w-sm space-y-6">
+        <div className="text-center space-y-2">
+          <div className="w-12 h-12 bg-green-500/10 border border-green-500/30 rounded-2xl flex items-center justify-center mx-auto">
+            <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-white">Área Restrita</h2>
+          <p className="text-slate-400 text-sm">管理者パスワードを入力してください</p>
+        </div>
+        <div className="space-y-2">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(''); }}
+            placeholder="Senha / パスワード"
+            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-600 transition-colors"
+            autoFocus
+          />
+          {error && <p className="text-red-400 text-sm">{error}</p>}
+        </div>
+        <div className="flex gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-colors"
+          >
+            キャンセル
+          </button>
+          <button
+            type="submit"
+            disabled={loading || !password}
+            className="flex-1 py-3 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {loading && (
+              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
+            {loading ? '...' : 'Entrar'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
 export default function NewsPage() {
   const { language, t } = useLanguage();
   const nt = t.news;
+  const { isAdmin, ready, setIsAdmin, logout } = useAdminAuth();
   const [posts, setPosts] = useState<NewsPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   async function fetchPosts() {
     setLoading(true);
@@ -165,7 +255,7 @@ export default function NewsPage() {
       await fetch('/api/news', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'delete-news', id }),
+        body: JSON.stringify({ action: 'delete-news', id, password: getStoredPassword() }),
       });
       setPosts((prev) => prev.filter((p) => p.id !== id));
     } finally {
@@ -173,8 +263,17 @@ export default function NewsPage() {
     }
   }
 
+  if (!ready) return null;
+
   return (
     <div className="page-enter">
+      {showAuthModal && (
+        <AuthModal
+          onSuccess={() => { setIsAdmin(true); setShowAuthModal(false); }}
+          onClose={() => setShowAuthModal(false)}
+        />
+      )}
+
       {/* ヒーロー */}
       <section className="relative py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-green-950" />
@@ -189,22 +288,44 @@ export default function NewsPage() {
           </div>
           <h1 className="text-5xl md:text-6xl font-black text-white">{nt.title}</h1>
           <p className="text-slate-400 text-lg">{nt.subtitle}</p>
-          <div className="pt-2">
-            <Link
-              href="/news/new"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all hover:scale-105 text-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-              {nt.newPost}
-            </Link>
+          <div className="pt-2 flex items-center justify-center gap-3 flex-wrap">
+            {isAdmin ? (
+              <>
+                <Link
+                  href="/news/new"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all hover:scale-105 text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                  {nt.newPost}
+                </Link>
+                <button
+                  onClick={logout}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-slate-300 font-medium rounded-xl transition-colors text-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Sair
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowAuthModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 font-medium rounded-xl transition-colors text-sm"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Admin
+              </button>
+            )}
           </div>
         </div>
       </section>
 
       <div className="max-w-3xl mx-auto px-4 pb-20 pt-10">
-
         {loading ? (
           <div className="flex justify-center py-20">
             <svg className="w-8 h-8 text-green-400 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -231,12 +352,6 @@ export default function NewsPage() {
             </div>
             <h2 className="text-xl font-semibold text-slate-300">{nt.noNews}</h2>
             <p className="text-slate-500">{nt.noNewsMsg}</p>
-            <Link
-              href="/news/new"
-              className="inline-flex items-center gap-2 mt-2 px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all text-sm"
-            >
-              {nt.newPost}
-            </Link>
           </div>
         ) : (
           <div className="space-y-8">
@@ -245,6 +360,7 @@ export default function NewsPage() {
                 key={post.id}
                 post={post}
                 lang={language}
+                isAdmin={isAdmin}
                 onDelete={handleDelete}
                 deleting={deletingId === post.id}
               />
