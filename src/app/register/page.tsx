@@ -10,6 +10,7 @@ type Level = 'beginner' | 'novice' | 'intermediate';
 interface FormErrors {
   name?: string;
   email?: string;
+  age?: string;
   school?: string;
   level?: string;
 }
@@ -22,6 +23,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    age: '',
     school: '',
     level: '' as Level | '',
   });
@@ -36,6 +38,9 @@ export default function RegisterPage() {
       newErrors.email = rt.required;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = rt.invalidEmail;
+    }
+    if (!formData.age.trim() || isNaN(Number(formData.age)) || Number(formData.age) <= 0) {
+      newErrors.age = rt.required;
     }
     if (!formData.school.trim()) newErrors.school = rt.required;
     if (!formData.level) newErrors.level = rt.required;
@@ -52,6 +57,7 @@ export default function RegisterPage() {
     const profile: UserProfile = {
       name: formData.name.trim(),
       email: formData.email.trim(),
+      age: formData.age.trim(),
       school: formData.school.trim(),
       level: formData.level as Level,
       registeredAt: new Date().toISOString(),
@@ -91,7 +97,7 @@ export default function RegisterPage() {
           <button
             onClick={() => {
               setSubmitted(false);
-              setFormData({ name: '', email: '', school: '', level: '' });
+              setFormData({ name: '', email: '', age: '', school: '', level: '' });
               setErrors({});
             }}
             className="w-full px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-semibold rounded-xl transition-all hover:scale-105"
@@ -155,6 +161,23 @@ export default function RegisterPage() {
               autoComplete="email"
             />
             {errors.email && <p className="text-red-400 text-sm">{errors.email}</p>}
+          </div>
+
+          {/* 年齢 */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-slate-300">
+              {rt.age} <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={120}
+              value={formData.age}
+              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+              placeholder={rt.agePlaceholder}
+              className={inputClass('age')}
+            />
+            {errors.age && <p className="text-red-400 text-sm">{errors.age}</p>}
           </div>
 
           {/* 学校名 */}

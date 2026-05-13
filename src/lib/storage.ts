@@ -3,6 +3,7 @@
 export interface UserProfile {
   name: string;
   email: string;
+  age: string;
   school: string;
   level: 'beginner' | 'novice' | 'intermediate';
   registeredAt: string;
