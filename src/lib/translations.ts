@@ -114,7 +114,7 @@ export const translations = {
       videosTitle: 'Vídeos Tutoriais',
       videosSubtitle: 'Assista aos vídeos abaixo para aprender o Go passo a passo.',
       videos: [
-        { title: 'Introdução ao Go — Regras Básicas', id: 'dkGKIBKgHtA' },
+        { title: 'Regras do Go — Parte 1', id: 'cXYSNxPkTfw' },
         { title: 'Como Capturar Pedras', id: '5PTXdR7GCBY' },
         { title: 'Estratégia para Iniciantes', id: 'JHDkABGFJjY' },
       ],
@@ -347,7 +347,7 @@ export const translations = {
       videosTitle: 'チュートリアル動画',
       videosSubtitle: '以下の動画でステップバイステップに囲碁を学ぼう。',
       videos: [
-        { title: '囲碁入門 — 基本ルール', id: 'dkGKIBKgHtA' },
+        { title: '囲碁のルール — 第1回', id: 'cXYSNxPkTfw' },
         { title: '石の取り方', id: '5PTXdR7GCBY' },
         { title: '初心者のための戦略', id: 'JHDkABGFJjY' },
       ],
