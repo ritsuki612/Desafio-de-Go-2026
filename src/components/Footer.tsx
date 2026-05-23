@@ -63,6 +63,10 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-3">{t.footer.contact}</h3>
             <p className="text-slate-400 text-sm mb-2">Brasil Nihon Kiin</p>
             <p className="text-slate-400 text-sm mb-3">São Paulo, Brasil</p>
+            <div className="space-y-1 mb-3">
+              <p className="text-slate-400 text-xs">Hasegawa Ritsuki</p>
+              <p className="text-slate-500 text-xs">(Brasil Nihon Kiin)</p>
+            </div>
             <a
               href="https://wa.me/5511945018691"
               target="_blank"
