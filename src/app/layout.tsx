@@ -87,8 +87,11 @@ const eventJsonLd = {
   name: 'Desafio de Go 2026 — 囲碁大会',
   description:
     'Torneio de Go (囲碁) para alunos da escola japonesa em São Paulo. Brasil Nihon Kiin主催の囲碁大会。',
-  startDate: '2026-07-26',
-  endDate: '2026-07-26',
+  startDate: '2026-07-26T14:00:00-03:00',
+  endDate: '2026-07-26T18:00:00-03:00',
+  doorTime: '2026-07-26T13:30:00-03:00',
+  isAccessibleForFree: true,
+  maximumAttendeeCapacity: 30,
   eventStatus: 'https://schema.org/EventScheduled',
   eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
   url: SITE_URL,

@@ -118,10 +118,10 @@ export default function HomePage() {
           {/* 大会詳細カード */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
             {[
-              { title: t.tournament.card1Title, value: t.tournament.card1Value, iconName: 'calendar' },
-              { title: t.tournament.card2Title, value: t.tournament.card2Value, iconName: 'board' },
-              { title: t.tournament.card3Title, value: t.tournament.card3Value, iconName: 'bars' },
-              { title: t.tournament.card4Title, value: t.tournament.card4Value, iconName: 'tag' },
+              { title: t.tournament.card1Title, value: t.tournament.card1Value, note: t.tournament.card1Note, iconName: 'calendar' },
+              { title: t.tournament.card2Title, value: t.tournament.card2Value, note: t.tournament.card2Note, iconName: 'board' },
+              { title: t.tournament.card3Title, value: t.tournament.card3Value, note: t.tournament.card3Note, iconName: 'bars' },
+              { title: t.tournament.card4Title, value: t.tournament.card4Value, note: t.tournament.card4Note, iconName: 'tag' },
             ].map((card, i) => (
               <div key={i} className="glass-card rounded-2xl p-6 text-center space-y-2">
                 <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center mx-auto">
@@ -129,6 +129,7 @@ export default function HomePage() {
                 </div>
                 <div className="text-sm text-slate-400 font-medium">{card.title}</div>
                 <div className="text-xl font-bold text-white">{card.value}</div>
+                {card.note && <div className="text-sm text-slate-400">{card.note}</div>}
               </div>
             ))}
           </div>
