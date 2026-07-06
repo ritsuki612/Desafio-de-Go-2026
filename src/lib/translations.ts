@@ -38,8 +38,8 @@ export const translations = {
       title: 'Sobre o Torneio',
       description:
         'Um torneio especial para alunos das escolas de língua japonesa que querem experienciar a cultura japonesa através do Go! Venha aprender, competir e se divertir.',
-      card1Title: 'Data',
-      card1Value: '26 de Julho',
+      card1Title: 'Data e Hora',
+      card1Value: '26/Jul 14:00〜18:00',
       card2Title: 'Formato',
       card2Value: 'Tabuleiro 9×9',
       card3Title: 'Nível',
@@ -271,8 +271,8 @@ export const translations = {
       title: '大会について',
       description:
         '日本語学校の生徒のための特別囲碁大会！囲碁を通じて日本文化を体験しよう。勝ち負けの悔しさや嬉しさを経験しながら、考える楽しさを感じてください。',
-      card1Title: '開催日',
-      card1Value: '7月26日',
+      card1Title: '開催日時',
+      card1Value: '7月26日 14:00〜18:00',
       card2Title: '使用盤',
       card2Value: '9路盤',
       card3Title: 'レベル',
