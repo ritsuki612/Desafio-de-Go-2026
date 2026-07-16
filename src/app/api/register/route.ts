@@ -38,12 +38,16 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
 
   // 確認メール送信
+  let emailSent = false;
   if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
     try {
       await sendConfirmationEmail(body.name, body.email);
+      emailSent = true;
     } catch (err) {
       console.error('メール送信エラー:', err);
     }
+  } else {
+    console.error('メール未送信: GMAIL_USER / GMAIL_APP_PASSWORD が設定されていません');
   }
 
   // Google スプレッドシートへの転送（設定済みの場合）
@@ -61,5 +65,5 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, emailSent });
 }
